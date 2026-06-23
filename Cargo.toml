@@ -1,0 +1,10 @@
+[package]
+name = "majorsilence-reporting"
+version = "1.0.0"
+edition = "2021"
+description = "Rust wrapper for the Majorsilence Reporting rdlnative shared library"
+license = "MIT OR Apache-2.0 OR BSD-2-Clause"
+repository = "https://github.com/majorsilence/reporting-rust"
+
+[dependencies]
+libloading = "0.8"
