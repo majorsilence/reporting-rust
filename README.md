@@ -180,4 +180,4 @@ Examples:
 
 ## License
 
-Available under your choice of MIT, Apache 2.0, or BSD 2-Clause — see `LICENSE-MIT`, `LICENSE-APACHE`, `LICENSE-BSD`.
+Available under your choice of MIT, Apache 2.0, or BSD-3-Clause — see `LICENSE-MIT`, `LICENSE-APACHE`, `LICENSE-BSD`.
