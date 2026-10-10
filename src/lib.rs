@@ -57,8 +57,10 @@ impl From<libloading::Error> for Error {
 // ─── Raw FFI symbol table ─────────────────────────────────────────────────────
 
 struct Symbols {
-    // Keep the library alive for the lifetime of these function pointers.
-    _lib: libloading::Library,
+    // Keep the library alive for the lifetime of these function pointers, and never unload it:
+    // rdlnative is a .NET Native AOT library whose runtime cannot be unloaded, so dlclose() on the
+    // last handle crashes the process (SIGSEGV). ManuallyDrop leaves it mapped until the process exits.
+    _lib: std::mem::ManuallyDrop<libloading::Library>,
 
     rdl_init:                 unsafe extern "C" fn() -> c_int,
     rdl_report_open:          unsafe extern "C" fn(*const c_char, *const c_char) -> *mut c_void,
@@ -101,7 +103,7 @@ impl Symbols {
             rdl_free:                 sym!(b"rdl_free\0",                 unsafe extern "C" fn(*mut c_void)),
             rdl_report_close:         sym!(b"rdl_report_close\0",         unsafe extern "C" fn(*mut c_void)),
             rdl_last_error:           sym!(b"rdl_last_error\0",           unsafe extern "C" fn() -> *const c_char),
-            _lib: lib,
+            _lib: std::mem::ManuallyDrop::new(lib),
         };
         Ok(syms)
     }
@@ -335,7 +337,7 @@ impl Report {
             .collect::<Result<_, Error>>()?;
 
         // Open the native handle.
-        let cs_ptr = c_cs.as_ref().map_or(std::ptr::null(), CString::as_ptr);
+        let cs_ptr = c_cs.as_ref().map_or(std::ptr::null(), |c| c.as_ptr());
         let h = unsafe { (self.lib.rdl_report_open)(c_rdl.as_ptr(), cs_ptr) };
         if h.is_null() {
             return Err(Error(format!("rdl_report_open failed: {}", self.lib.last_error())));
