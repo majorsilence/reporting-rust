@@ -233,6 +233,9 @@ impl Report {
     /// `SkipDatabaseSchemaValidation` is enabled automatically when datasets are
     /// present — no database connection is needed.
     ///
+    /// Note: rdlnative 27+ ignores a dataset whose rows are empty, so the
+    /// report's own query runs instead. Pass at least one row to inject.
+    ///
     /// ```no_run
     /// # let lib = majorsilence_reporting::RdlLibrary::load("/tmp/librdlnative.so").unwrap();
     /// # let mut rpt = lib.report("/tmp/report.rdl");
