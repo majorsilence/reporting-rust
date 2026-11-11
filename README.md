@@ -31,12 +31,14 @@ rustup update stable
 
 ### Add to your project
 
+Published on [crates.io](https://crates.io/crates/majorsilence-reporting) (once released).
+
 ```toml
 # Cargo.toml
 [dependencies]
 majorsilence-reporting = { path = "/path/to/reporting-rust" }
 # or once published to crates.io:
-# majorsilence-reporting = "1.0"
+# majorsilence-reporting = "26.0"
 ```
 
 ### Get the native library
