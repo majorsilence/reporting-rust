@@ -1,0 +1,32 @@
+name: CI
+
+# Runs the integration tests against the real rdlnative library from the
+# latest stable and latest pre-release of majorsilence/Reporting, so the
+# tests render real PDF/CSV output instead of silently skipping.
+on:
+  push:
+    branches: [main, 'release/**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Rust / rdlnative ${{ matrix.channel }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        channel: [stable, prerelease]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install native dependencies
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libfontconfig1 libfreetype6
+      - name: Fetch rdlnative (${{ matrix.channel }})
+        run: .github/scripts/fetch-rdlnative.sh ${{ matrix.channel }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Run tests (fail if any are skipped)
+        run: |
+          cargo test -- --nocapture 2>&1 | tee test.log
+          if grep -q "skipping" test.log; then echo "::error::tests were skipped"; exit 1; fi
