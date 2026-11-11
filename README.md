@@ -38,7 +38,7 @@ Published on [crates.io](https://crates.io/crates/majorsilence-reporting) (once 
 [dependencies]
 majorsilence-reporting = { path = "/path/to/reporting-rust" }
 # or once published to crates.io:
-# majorsilence-reporting = "1.0"
+# majorsilence-reporting = "27.0.0-alpha.11"
 ```
 
 ### Get the native library
