@@ -31,6 +31,8 @@ rustup update stable
 
 ### Add to your project
 
+Published on [crates.io](https://crates.io/crates/majorsilence-reporting) (once released).
+
 ```toml
 # Cargo.toml
 [dependencies]
